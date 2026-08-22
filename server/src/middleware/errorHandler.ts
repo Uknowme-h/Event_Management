@@ -22,6 +22,7 @@ export function errorHandler(err: unknown, _req: Request, res: Response, _next: 
   }
 
   const status = 500;
-  const message = env.NODE_ENV === "production" ? "Internal server error" : "Internal server error";
+  const message = env.NODE_ENV === "production" ? "Internal server error" : (err instanceof Error ? err.message : "Internal server error");
+  console.error("Unhandled error:", err);
   res.status(status).json({ error: { code: "INTERNAL_ERROR", message } });
 }
