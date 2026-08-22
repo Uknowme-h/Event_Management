@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import { pinoHttp } from "pino-http";
 import { errorHandler } from "./middleware/errorHandler.js";
+import authRouter from "./modules/auth/auth.routes.js";
 
 export function createApp() {
   const app = express();
@@ -13,6 +14,8 @@ export function createApp() {
   app.get("/api/health", (_req, res) => {
     res.json({ status: "ok", uptime: process.uptime() });
   });
+
+  app.use("/api/auth", authRouter);
 
   app.use(errorHandler);
 
