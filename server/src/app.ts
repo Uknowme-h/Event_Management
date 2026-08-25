@@ -3,6 +3,8 @@ import cors from "cors";
 import { pinoHttp } from "pino-http";
 import { errorHandler } from "./middleware/errorHandler.js";
 import authRouter from "./modules/auth/auth.routes.js";
+import eventsRouter from "./modules/events/events.routes.js";
+import tagsRouter from "./modules/tags/tags.routes.js";
 
 export function createApp() {
   const app = express();
@@ -16,6 +18,8 @@ export function createApp() {
   });
 
   app.use("/api/auth", authRouter);
+  app.use("/api/events", eventsRouter);
+app.use("/api/tags", tagsRouter);
 
   app.use(errorHandler);
 
