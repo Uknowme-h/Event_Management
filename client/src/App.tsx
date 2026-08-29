@@ -1,37 +1,35 @@
-import { useEffect, useState } from 'react'
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
-
-function Home() {
-  return (
-    <div className="mx-auto max-w-xl py-16 text-center">
-      <h1 className="text-3xl font-bold">Event Planning App</h1>
-      <p className="mt-4 text-gray-600">Scaffold booting. API health check:</p>
-      <HealthCheck />
-    </div>
-  )
-}
-
-function HealthCheck() {
-  const [status, setStatus] = useState('checking...')
-
-  useEffect(() => {
-    fetch('/api/health')
-      .then((r) => r.json())
-      .then((d) => setStatus(d.status))
-      .catch(() => setStatus('unreachable'))
-  }, [])
-
-  return <p className="mt-2 font-mono text-sm text-green-600">{status}</p>
-}
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import { AuthProvider } from "@/auth/AuthContext";
+import { GuestRoute } from "@/auth/GuestRoute";
+import { ProtectedRoute } from "@/auth/ProtectedRoute";
+import { AppLayout } from "@/components/layout/AppLayout";
+import { HomePage } from "@/pages/HomePage";
+import { LoginPage } from "@/pages/LoginPage";
+import { SignupPage } from "@/pages/SignupPage";
 
 function App() {
   return (
     <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Home />} />
-      </Routes>
+      <AuthProvider>
+        <Routes>
+          {/* Guest-only routes: redirect to / when already logged in */}
+          <Route element={<GuestRoute />}>
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/signup" element={<SignupPage />} />
+          </Route>
+
+          {/* Protected routes: redirect to /login when not logged in */}
+          <Route element={<ProtectedRoute />}>
+            <Route element={<AppLayout />}>
+              <Route path="/" element={<HomePage />} />
+            </Route>
+          </Route>
+
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </AuthProvider>
     </BrowserRouter>
-  )
+  );
 }
 
-export default App
+export default App;
