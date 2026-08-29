@@ -3,25 +3,29 @@ import { AuthProvider } from "@/auth/AuthContext";
 import { GuestRoute } from "@/auth/GuestRoute";
 import { ProtectedRoute } from "@/auth/ProtectedRoute";
 import { AppLayout } from "@/components/layout/AppLayout";
-import { HomePage } from "@/pages/HomePage";
 import { LoginPage } from "@/pages/LoginPage";
 import { SignupPage } from "@/pages/SignupPage";
+import { EventsPage } from "@/pages/EventsPage";
+import { EventDetailPage } from "@/pages/EventDetailPage";
+import { EventFormPage } from "@/pages/EventFormPage";
 
 function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
         <Routes>
-          {/* Guest-only routes: redirect to / when already logged in */}
+          {/* Guest-only: redirect to / when already logged in */}
           <Route element={<GuestRoute />}>
             <Route path="/login" element={<LoginPage />} />
             <Route path="/signup" element={<SignupPage />} />
           </Route>
 
-          {/* Protected routes: redirect to /login when not logged in */}
+          {/* Protected: redirect to /login when not logged in */}
           <Route element={<ProtectedRoute />}>
             <Route element={<AppLayout />}>
-              <Route path="/" element={<HomePage />} />
+              <Route path="/" element={<EventsPage />} />
+              <Route path="/events/:id" element={<EventDetailPage />} />
+              <Route path="/events/:id/edit" element={<EventFormPage />} />
             </Route>
           </Route>
 

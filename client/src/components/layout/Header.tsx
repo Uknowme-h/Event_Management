@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { useAuth } from "@/auth/AuthContext";
 import { Button } from "@/components/ui/Button";
 
@@ -6,9 +7,12 @@ export function Header() {
 
   return (
     <header className="flex shrink-0 items-center justify-between border-b border-[#DCDCDC] bg-white px-6 py-4">
-      <span className="font-mono text-sm font-medium tracking-tight text-[#111]">
-        Event planning
-      </span>
+      <Link
+        to="/"
+        className="font-mono text-sm font-medium tracking-tight text-[#111] hover:opacity-70"
+      >
+        event planning
+      </Link>
 
       {user && (
         <div className="flex items-center gap-5">
