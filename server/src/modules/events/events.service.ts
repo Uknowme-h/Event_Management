@@ -1,6 +1,7 @@
 import { forbidden, notFound, unauthorized } from "../../utils/AppError.js";
 import type { EventBody, ListEventsQuery } from "./events.schema.js";
 import * as eventsRepo from "./events.repository.js";
+import * as rsvpRepo from "../rsvp/rsvp.repository.js";
 
 function requireUserId(userId: number | undefined) {
   if (!userId) throw unauthorized("Authentication required");
@@ -36,7 +37,9 @@ export async function listEvents(userId: number | undefined, query: ListEventsQu
 export async function getEvent(userId: number | undefined, eventId: number) {
   const id = requireUserId(userId);
   const event = await eventsRepo.findByIdWithDetails(eventId);
-  return hidePrivate(event, id);
+  hidePrivate(event, id); // throws if not found or not visible
+  const rsvpData = await rsvpRepo.getRsvpData(eventId, id);
+  return { ...event!, ...rsvpData };
 }
 
 export async function createEvent(userId: number | undefined, input: EventBody) {

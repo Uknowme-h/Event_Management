@@ -8,6 +8,7 @@ import {
   listEventsQuerySchema,
 } from "./events.schema.js";
 import * as eventsController from "./events.controller.js";
+import rsvpRouter from "../rsvp/rsvp.routes.js";
 
 const router = Router();
 
@@ -42,5 +43,8 @@ router.delete(
   validate({ params: eventIdParamsSchema }),
   asyncHandler(eventsController.remove),
 );
+
+// RSVP sub-routes: PUT /events/:id/rsvp, DELETE /events/:id/rsvp
+router.use("/:id/rsvp", rsvpRouter);
 
 export default router;
