@@ -1,6 +1,10 @@
 # Event Planning App
 
-A full-stack event management application. Users can sign up, create public or private events, filter and search them, and manage their own.
+A full-stack event management application. Users can sign up, create public or private events, filter and search them, manage their own, and RSVP to events they plan to attend.
+
+## Demo
+
+[![Watch demo](https://cdn.loom.com/sessions/thumbnails/a1d7f7736f324cadb1980fc7fe45a42b-with-play.gif)](https://www.loom.com/share/a1d7f7736f324cadb1980fc7fe45a42b)
 
 **Stack:** Node.js + Express · React · MySQL · Knex.js · TypeScript · Zod · Tailwind CSS
 
@@ -55,6 +59,8 @@ npm run dev            # starts on http://localhost:5173
 
 **Creator-only mutations** — Edit and delete are checked both in the service layer (throws 403) and on the frontend (buttons hidden if you're not the creator).
 
+**UTC everywhere** — All datetimes are stored and compared in UTC. The Knex connection is pinned to `+00:00` and queries use `UTC_TIMESTAMP()` explicitly, so the upcoming/past split is consistent regardless of the server's system timezone.
+
 ---
 
 ## Assumptions
@@ -64,6 +70,8 @@ npm run dev            # starts on http://localhost:5173
 - Tags are shared across all events (not per-user). New tags can be typed in freely; suggestions come from existing ones.
 - Pagination defaults to 10 events per page.
 - Event start time is stored in UTC; the UI displays it in the browser's local timezone.
+- RSVP is only allowed on upcoming events — past events show a read-only attendance summary.
+- Any logged-in user can RSVP to any event they can see, including their own.
 
 ---
 

@@ -20,3 +20,6 @@ Thumbs.db
 
 # coverage
 coverage/
+
+# local bonus SQL test — not for version control
+bonus_test.sql
