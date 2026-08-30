@@ -4,6 +4,10 @@ A full-stack event management application. Users can sign up, create public or p
 
 ## Demo
 
+
+https://github.com/user-attachments/assets/d94d79db-0dfa-44e3-9b38-d762e91abc2e
+
+
 [![Watch demo](https://cdn.loom.com/sessions/thumbnails/a1d7f7736f324cadb1980fc7fe45a42b-with-play.gif)](https://www.loom.com/share/a1d7f7736f324cadb1980fc7fe45a42b)
 
 **Stack:** Node.js + Express · React · MySQL · Knex.js · TypeScript · Zod · Tailwind CSS
