@@ -1,5 +1,5 @@
 import { api } from "@/api/client";
-import type { Event, EventListMeta } from "@/types";
+import type { Event, EventListMeta, RsvpCounts, RsvpStatus } from "@/types";
 
 export type EventFiltersParams = {
   status?: "upcoming" | "past";
@@ -57,4 +57,21 @@ export async function updateEvent(id: number, body: EventBodyPayload): Promise<E
 
 export async function deleteEvent(id: number): Promise<void> {
   await api<null>(`/api/events/${id}`, { method: "DELETE" });
+}
+
+export type RsvpData = { rsvp_counts: RsvpCounts; my_rsvp: RsvpStatus | null };
+
+export async function setRsvp(eventId: number, status: RsvpStatus): Promise<RsvpData> {
+  const res = await api<{ status: string; data: RsvpData }>(`/api/events/${eventId}/rsvp`, {
+    method: "PUT",
+    body: JSON.stringify({ status }),
+  });
+  return res.data;
+}
+
+export async function removeRsvp(eventId: number): Promise<RsvpData> {
+  const res = await api<{ status: string; data: RsvpData }>(`/api/events/${eventId}/rsvp`, {
+    method: "DELETE",
+  });
+  return res.data;
 }

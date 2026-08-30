@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import type { Event } from "@/types";
+import type { Event, RsvpCounts, RsvpStatus } from "@/types";
 import { deleteEvent, fetchEvent } from "@/api/events";
 import { ApiError } from "@/api/client";
 import { useAuth } from "@/auth/AuthContext";
@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { Modal } from "@/components/ui/Modal";
 import { Alert } from "@/components/ui/Alert";
+import { RsvpButtons } from "@/components/events/RsvpButtons";
 
 function formatDate(iso: string) {
   return new Date(iso).toLocaleString("en-US", {
@@ -45,7 +46,6 @@ export function EventDetailPage() {
       .then(setEvent)
       .catch((err: unknown) => {
         if (err instanceof ApiError && (err.status === 404 || err.status === 403)) {
-          // Private events the user can't see return 404 — never leak existence
           setFetchError("Event not found.");
         } else {
           setFetchError("Could not load this event. Please try again.");
@@ -67,7 +67,15 @@ export function EventDetailPage() {
     }
   }
 
+  const handleRsvpUpdate = useCallback(
+    (rsvp_counts: RsvpCounts, my_rsvp: RsvpStatus | null) => {
+      setEvent((prev) => (prev ? { ...prev, rsvp_counts, my_rsvp } : prev));
+    },
+    [],
+  );
+
   const isOwner = Boolean(user && event && user.id === event.creator_id);
+  const isPast = event ? new Date(event.start_at) < new Date() : false;
 
   if (loading) {
     return (
@@ -90,6 +98,9 @@ export function EventDetailPage() {
       </div>
     );
   }
+
+  const rsvpCounts = event.rsvp_counts ?? { yes: 0, no: 0, maybe: 0 };
+  const myRsvp = event.my_rsvp ?? null;
 
   return (
     <div className="mx-auto max-w-2xl px-6 py-10">
@@ -132,9 +143,34 @@ export function EventDetailPage() {
           </div>
         )}
 
+        {/* RSVP — only for upcoming events */}
+        {isPast ? (
+          <div className="mt-6 border-t border-[#F0F0F0] pt-5">
+            <p className="text-xs text-[#999]">
+              This event has passed.
+              {(rsvpCounts.yes + rsvpCounts.maybe) > 0 && (
+                <span>
+                  {" "}
+                  {rsvpCounts.yes} went · {rsvpCounts.maybe} were maybe.
+                </span>
+              )}
+            </p>
+          </div>
+        ) : (
+          <div className="mt-6 border-t border-[#F0F0F0] pt-5">
+            <p className="mb-3 text-xs uppercase tracking-[0.15em] text-[#555]">Are you going?</p>
+            <RsvpButtons
+              eventId={event.id}
+              counts={rsvpCounts}
+              myRsvp={myRsvp}
+              onUpdate={handleRsvpUpdate}
+            />
+          </div>
+        )}
+
         {/* Owner actions */}
         {isOwner && (
-          <div className="mt-6 flex items-center gap-5 border-t border-[#F0F0F0] pt-4">
+          <div className="mt-5 flex items-center gap-5 border-t border-[#F0F0F0] pt-4">
             <Link
               to={`/events/${event.id}/edit`}
               className="text-sm text-[#111] underline underline-offset-4 hover:opacity-70"

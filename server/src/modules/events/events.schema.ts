@@ -12,6 +12,9 @@ export const eventBodySchema = z.object({
       .min(1, "start_at is required")
       .refine((value) => !Number.isNaN(Date.parse(value)), {
         message: "start_at must be a valid datetime",
+      })
+      .refine((value) => new Date(value) > new Date(), {
+        message: "start_at must be in the future",
       }),
     location: z.string().max(255).optional().default(""),
     type: z.enum(["public", "private"]),

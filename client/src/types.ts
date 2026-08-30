@@ -4,6 +4,14 @@ export type User = {
   email: string;
 };
 
+export type RsvpStatus = "yes" | "no" | "maybe";
+
+export type RsvpCounts = {
+  yes: number;
+  no: number;
+  maybe: number;
+};
+
 export type Event = {
   id: number;
   creator_id: number;
@@ -16,6 +24,10 @@ export type Event = {
   tags: string[];
   created_at?: string;
   updated_at?: string;
+  /** Only present on the detail endpoint response */
+  rsvp_counts?: RsvpCounts;
+  /** Only present on the detail endpoint response */
+  my_rsvp?: RsvpStatus | null;
 };
 
 export type EventListMeta = {
