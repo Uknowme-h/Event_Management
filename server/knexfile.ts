@@ -11,6 +11,7 @@ const config: Knex.Config = {
     user: process.env.DATABASE_USER ?? "app",
     password: process.env.DATABASE_PASSWORD ?? "app",
     database: process.env.DATABASE_NAME ?? "event_management",
+    timezone: "+00:00", // force all datetime I/O through UTC
   },
   migrations: {
     directory: "./migrations",

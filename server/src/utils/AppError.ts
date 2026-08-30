@@ -18,3 +18,6 @@ export const unauthorized = (message = "Unauthorized") =>
 
 export const forbidden = (message = "Forbidden") =>
   new AppError(403, "FORBIDDEN", message);
+
+export const badRequest = (message: string) =>
+  new AppError(400, "BAD_REQUEST", message);

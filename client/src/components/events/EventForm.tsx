@@ -33,14 +33,26 @@ type EventFormProps = {
   compact?: boolean;
 };
 
-/** Convert a server ISO string to the value expected by <input type="datetime-local"> */
-function isoToLocal(iso: string): string {
-  const d = new Date(iso);
+/** Convert a Date to the value expected by <input type="datetime-local"> */
+function toDatetimeLocal(d: Date): string {
   const pad = (n: number) => String(n).padStart(2, "0");
   return (
     `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}` +
     `T${pad(d.getHours())}:${pad(d.getMinutes())}`
   );
+}
+
+/** Convert a server ISO string to the value expected by <input type="datetime-local"> */
+function isoToLocal(iso: string): string {
+  return toDatetimeLocal(new Date(iso));
+}
+
+/** Earliest selectable datetime — now rounded up to the next minute */
+function minDatetimeLocal(): string {
+  const now = new Date();
+  now.setSeconds(0, 0);
+  now.setMinutes(now.getMinutes() + 1);
+  return toDatetimeLocal(now);
 }
 
 export function EventForm({
@@ -161,6 +173,7 @@ export function EventForm({
             label="Date & Time"
             type="datetime-local"
             value={startAt}
+            min={minDatetimeLocal()}
             onChange={(e) => setStartAt(e.target.value)}
             error={fieldErrors.start_at}
           />
@@ -179,6 +192,7 @@ export function EventForm({
             label="Date & Time"
             type="datetime-local"
             value={startAt}
+            min={minDatetimeLocal()}
             onChange={(e) => setStartAt(e.target.value)}
             error={fieldErrors.start_at}
           />

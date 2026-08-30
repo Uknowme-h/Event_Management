@@ -17,9 +17,9 @@ function applyFilters(qb: Knex.QueryBuilder, filters: EventListFilters) {
       nested.where("events.type", "public").orWhere("events.creator_id", filters.userId);
     });
     if (filters.status === "upcoming") {
-      qb.where("events.start_at", ">=", db.fn.now());
+      qb.where("events.start_at", ">=", db.raw("UTC_TIMESTAMP()"));
     } else if (filters.status === "past") {
-      qb.where("events.start_at", "<", db.fn.now());
+      qb.where("events.start_at", "<", db.raw("UTC_TIMESTAMP()"));
     }
     if (filters.type) {
       qb.where("events.type", filters.type);
